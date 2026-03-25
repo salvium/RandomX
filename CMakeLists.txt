@@ -323,48 +323,48 @@ endif()
 
 set(RANDOMX_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/src" CACHE STRING "RandomX Include path")
 
-add_library(randomx ${randomx_sources})
+add_library(randomx_salvium ${randomx_sources})
 
 if(TARGET generate-asm)
-  add_dependencies(randomx generate-asm)
+  add_dependencies(randomx_sources generate-asm)
 endif()
 
-set_property(TARGET randomx PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET randomx PROPERTY CXX_STANDARD 11)
-set_property(TARGET randomx PROPERTY CXX_STANDARD_REQUIRED ON)
-set_property(TARGET randomx PROPERTY PUBLIC_HEADER src/randomx.h)
+set_property(TARGET randomx_salvium PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET randomx_salvium PROPERTY CXX_STANDARD 11)
+set_property(TARGET randomx_salvium PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET randomx_salvium PROPERTY PUBLIC_HEADER src/randomx.h)
 
 include(GNUInstallDirs)
-install(TARGETS randomx
+install(TARGETS randomx_salvium
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-add_executable(randomx-tests
+add_executable(randomx_salvium-tests
   src/tests/tests.cpp)
-target_link_libraries(randomx-tests
-  PRIVATE randomx)
-set_property(TARGET randomx-tests PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET randomx-tests PROPERTY CXX_STANDARD 11)
+target_link_libraries(randomx_salvium-tests
+  PRIVATE randomx_salvium)
+set_property(TARGET randomx_salvium-tests PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET randomx_salvium-tests PROPERTY CXX_STANDARD 11)
 
-add_executable(randomx-codegen
+add_executable(randomx_salvium-codegen
   src/tests/code-generator.cpp)
-target_link_libraries(randomx-codegen
-  PRIVATE randomx)
+target_link_libraries(randomx_salvium-codegen
+  PRIVATE randomx_salvium)
 
-set_property(TARGET randomx-codegen PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET randomx-codegen PROPERTY CXX_STANDARD 11)
+set_property(TARGET randomx_salvium-codegen PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET randomx_salvium-codegen PROPERTY CXX_STANDARD 11)
 
 if(NOT Threads_FOUND AND UNIX AND NOT APPLE)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads)
 endif()
 
-add_executable(randomx-benchmark
+add_executable(randomx_salvium-benchmark
   src/tests/benchmark.cpp
   src/tests/affinity.cpp)
-target_link_libraries(randomx-benchmark
-  PRIVATE randomx
+target_link_libraries(randomx_salvium-benchmark
+  PRIVATE randomx_salvium
   PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 
 include(CheckCXXSourceCompiles)
@@ -377,7 +377,7 @@ int main() {
 }" HAVE_CXX_ATOMICS)
 
 if(NOT HAVE_CXX_ATOMICS)
-  target_link_libraries(randomx-benchmark
+  target_link_libraries(randomx_salvium-benchmark
     PRIVATE "atomic")
 endif()
 
@@ -388,5 +388,5 @@ int main() {
   return posix_memalign(&p, 64, 64);
 }" HAVE_POSIX_MEMALIGN)
 
-set_property(TARGET randomx-benchmark PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET randomx-benchmark PROPERTY CXX_STANDARD 11)
+set_property(TARGET randomx_salvium-benchmark PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET randomx_salvium-benchmark PROPERTY CXX_STANDARD 11)
